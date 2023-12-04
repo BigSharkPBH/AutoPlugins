@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AutoPlugins:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AutoPlugins_jar</output-path>
+    <root id="archive" name="AutoPlugins.jar">
+      <element id="module-output" name="AutoPlugins" />
+      <element id="dir-copy" path="$PROJECT_DIR$/out" />
+    </root>
+  </artifact>
+</component>
