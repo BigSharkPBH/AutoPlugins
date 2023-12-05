@@ -1,11 +1,8 @@
 package com.dsy.function;
 
-import cn.hutool.core.io.file.FileReader;
-import cn.hutool.core.io.file.FileWriter;
-import com.dsy.domain.PluginsInfo;
+import cn.hutool.core.io.FileUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringJoiner;
@@ -39,7 +36,7 @@ public class PluginsList {
                     initPluginsFile();
                 }
                 case 2 -> {
-                    new CopyFile();
+                    addList();
                 }
                 case 3 -> {
                     System.exit(0);
@@ -47,6 +44,36 @@ public class PluginsList {
                 default -> System.out.println("请输入正确的数字");
             }
         }
+    }
+
+    public void addList() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入基准文件夹的路径,如xxx\\plugins");
+        String fSrc;
+        while (true) {
+            fSrc = sc.nextLine();
+            String[] arr = fSrc.split("\\\\");
+            if ("plugins".equals(arr[arr.length - 1])) {
+                StringJoiner sj = new StringJoiner("\\", "", "");
+                for (String s : arr) {
+                    sj.add(s);
+                }
+                fSrc = sj.toString();
+                if (!new File("list.txt").exists() || new File("list.txt").length() == 0) {
+                    System.out.println("请先指定基准文件夹");
+                    break;
+                } else {
+                    List<String> list = FileUtil.readUtf8Lines("..\\..\\..\\list.txt");
+                    int number = list.size();
+                    list.add(number + "=" + fSrc);
+                    FileUtil.writeUtf8Lines(list, "..\\..\\..\\list.txt");
+                }
+                break;
+            } else {
+                System.out.println("路径错误,请重新输入");
+            }
+        }
+
     }
 
     public void initPluginsFile() {
@@ -62,24 +89,18 @@ public class PluginsList {
                     sj.add(s);
                 }
                 fSrc = sj.toString();
-
                 if (!new File("list.txt").exists() || new File("list.txt").length() == 0) {
-                    File file = new File("..\\..\\..\\list.txt");
-                    FileWriter fw = new FileWriter(file);
-                    fw.write("0=" + fSrc);
+                    FileUtil.writeUtf8String("0=" + fSrc, "..\\..\\..\\list.txt");
                 } else {
-                    FileReader fr = new FileReader("..\\..\\..\\list.txt");
-                    List<String> list = fr.readLines();
+                    List<String> list = FileUtil.readUtf8Lines("..\\..\\..\\list.txt");
                     for (int i = 0; i < list.size(); i++) {
                         if ("0".equals(list.get(i).split("=")[0])) {
                             list.set(i, "0=" + fSrc);
                             break;
                         }
                     }
-                    FileWriter fw = new FileWriter("list.txt");
-                    fw.writeLines(list);
+                    FileUtil.writeUtf8Lines(list, "..\\..\\..\\list.txt");
                 }
-
                 break;
             } else {
                 System.out.println("路径错误,请重新输入");

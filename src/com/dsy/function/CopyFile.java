@@ -6,6 +6,7 @@ import com.dsy.domain.PluginsInfo;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CopyFile {
     public CopyFile() {
@@ -23,8 +24,13 @@ public class CopyFile {
         //读取现在的插件列表
         BufferedReader br1 = null;
         try {
-            br1 = new BufferedReader(new FileReader("other.txt", StandardCharsets.UTF_8));
-            fSrc = br1.readLine();
+            br1 = new BufferedReader(new FileReader("list.txt", StandardCharsets.UTF_8));
+            String line;
+            while ((line = br1.readLine()) != null) {
+                if ("0".equals(line.split("=")[0])) {
+                    fSrc = line.split("=")[1];
+                }
+            }
             getAnyFile(new File(fSrc), baseList);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -44,12 +50,11 @@ public class CopyFile {
             br3 = new BufferedReader(new FileReader("list.txt", StandardCharsets.UTF_8));
             String line;
             while ((line = br3.readLine()) != null) {
-                File file = new File(line);
-                fileArrayList.add(file);
-//                C:\Users\PBHls\Desktop\测试\同步1\plugins
-//                C:\Users\PBHls\Desktop\测试\同步2\plugins
+                if (!"0".equals(line.split("=")[0])) {
+                    File file = new File(line.split("=")[1]);
+                    fileArrayList.add(file);
+                }
             }
-//            System.out.println(fileArrayList);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -61,12 +66,16 @@ public class CopyFile {
                 throw new RuntimeException(e);
             }
         }
+        List<String> whiteList = FileUtil.readUtf8Lines("..\\..\\..\\white.txt");
         //遍历需要被同步文件夹下的所有文件
         for (File file : fileArrayList) {
             ArrayList<PluginsInfo> newList = new ArrayList<>();
             getAnyFile(file, newList);
-//            System.out.println(newList);
             for (PluginsInfo pi1 : newList) {
+                String[] a11 = pi1.getName().split("\\.");
+                if (whiteList.contains(pi1.getName()) || whiteList.contains(a11[a11.length - 1])) {
+                    continue;
+                }
                 //如果newList里不包含pi这个对象
                 if (!baseList.contains(pi1)) {
                     //进入文件夹获取到里面的文件
@@ -75,6 +84,10 @@ public class CopyFile {
                 }
             }
             for (PluginsInfo pi1 : baseList) {
+                String[] a11 = pi1.getName().split("\\.");
+                if (whiteList.contains(pi1.getName()) || whiteList.contains(a11[a11.length - 1])) {
+                    continue;
+                }
                 //如果baseList里不包含pi这个对象
                 if (!newList.contains(pi1)) {
                     //去其他文件夹粘贴这个文件
@@ -134,7 +147,7 @@ public class CopyFile {
         File[] files = src.listFiles();
         if (isCopy) {
             StringBuilder sb = getRelativePath(pi);
-            FileUtil.copy(pi.getPath(), src.getPath()+sb, true);
+            FileUtil.copy(pi.getPath(), src.getPath() + sb, true);
         } else {
             for (File file : files) {
                 if (file.isFile()) {
