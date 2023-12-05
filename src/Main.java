@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         while (true) {
             System.out.println("----------------欢迎使用插件自动同步工具---------------");
-            System.out.println("1.更新基准文件列表");
+            System.out.println("1.设置");
             System.out.println("2.同步插件");
             System.out.println("3.退出");
             System.out.println("请输入对应的数字");

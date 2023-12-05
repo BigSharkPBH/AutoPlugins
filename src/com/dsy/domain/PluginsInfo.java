@@ -20,6 +20,7 @@ public class PluginsInfo {
 
     /**
      * 获取
+     *
      * @return name
      */
     public String getName() {
@@ -28,6 +29,7 @@ public class PluginsInfo {
 
     /**
      * 设置
+     *
      * @param name
      */
     public void setName(String name) {
@@ -36,6 +38,7 @@ public class PluginsInfo {
 
     /**
      * 获取
+     *
      * @return length
      */
     public long getLength() {
@@ -44,6 +47,7 @@ public class PluginsInfo {
 
     /**
      * 设置
+     *
      * @param length
      */
     public void setLength(long length) {
@@ -52,6 +56,7 @@ public class PluginsInfo {
 
     /**
      * 获取
+     *
      * @return lastModified
      */
     public long getLastModified() {
@@ -60,6 +65,7 @@ public class PluginsInfo {
 
     /**
      * 设置
+     *
      * @param lastModified
      */
     public void setLastModified(long lastModified) {
@@ -68,6 +74,7 @@ public class PluginsInfo {
 
     /**
      * 获取
+     *
      * @return path
      */
     public String getPath() {
@@ -76,6 +83,7 @@ public class PluginsInfo {
 
     /**
      * 设置
+     *
      * @param path
      */
     public void setPath(String path) {
@@ -91,7 +99,34 @@ public class PluginsInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PluginsInfo that = (PluginsInfo) o;
-        return length == that.length && lastModified == that.lastModified && Objects.equals(name, that.name) && Objects.equals(path, that.path);
+
+        String[] strArr1 = path.split("\\\\");
+        StringBuilder sb1 = new StringBuilder();
+        for (int i = strArr1.length - 1; i >= 0; i--) {
+            if ("plugins".equals(strArr1[i])) {
+                break;
+            } else {
+                sb1.insert(0, strArr1[i]);
+                sb1.insert(0, "\\");
+            }
+        }
+        String s1 = sb1.toString();
+        String[] strArr2 = that.path.split("\\\\");
+        StringBuilder sb2 = new StringBuilder();
+        for (int i = strArr2.length - 1; i >= 0; i--) {
+            if ("plugins".equals(strArr2[i])) {
+                break;
+            } else {
+                sb2.insert(0, strArr2[i]);
+                sb2.insert(0, "\\");
+            }
+        }
+        String s2  = sb2.toString();
+
+      /*  System.out.println(s1);
+        System.out.println(s2);*/
+
+        return length == that.length && lastModified == that.lastModified && Objects.equals(name, that.name) && Objects.equals(s1, s2);
     }
 
     @Override
