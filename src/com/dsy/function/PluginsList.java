@@ -63,10 +63,10 @@ public class PluginsList {
                     System.out.println("请先指定基准文件夹");
                     break;
                 } else {
-                    List<String> list = FileUtil.readUtf8Lines("..\\..\\..\\list.txt");
+                    List<String> list = FileUtil.readUtf8Lines("list.txt");
                     int number = list.size();
                     list.add(number + "=" + fSrc);
-                    FileUtil.writeUtf8Lines(list, "..\\..\\..\\list.txt");
+                    FileUtil.writeUtf8Lines(list, "list.txt");
                 }
                 break;
             } else {
@@ -90,16 +90,16 @@ public class PluginsList {
                 }
                 fSrc = sj.toString();
                 if (!new File("list.txt").exists() || new File("list.txt").length() == 0) {
-                    FileUtil.writeUtf8String("0=" + fSrc, "..\\..\\..\\list.txt");
+                    FileUtil.writeUtf8String("0=" + fSrc, "list.txt");
                 } else {
-                    List<String> list = FileUtil.readUtf8Lines("..\\..\\..\\list.txt");
+                    List<String> list = FileUtil.readUtf8Lines("list.txt");
                     for (int i = 0; i < list.size(); i++) {
                         if ("0".equals(list.get(i).split("=")[0])) {
                             list.set(i, "0=" + fSrc);
                             break;
                         }
                     }
-                    FileUtil.writeUtf8Lines(list, "..\\..\\..\\list.txt");
+                    FileUtil.writeUtf8Lines(list, "list.txt");
                 }
                 break;
             } else {

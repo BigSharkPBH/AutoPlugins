@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/AutoPlugins_jar</output-path>
     <root id="archive" name="AutoPlugins.jar">
       <element id="module-output" name="AutoPlugins" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hutool-all-5.8.23.jar" path-in-jar="/" />
       <element id="dir-copy" path="$PROJECT_DIR$/out" />
     </root>
   </artifact>

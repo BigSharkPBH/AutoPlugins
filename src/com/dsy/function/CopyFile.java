@@ -22,51 +22,20 @@ public class CopyFile {
      * */
     public void compare() {
         //读取现在的插件列表
-        BufferedReader br1 = null;
-        try {
-            br1 = new BufferedReader(new FileReader("list.txt", StandardCharsets.UTF_8));
-            String line;
-            while ((line = br1.readLine()) != null) {
-                if ("0".equals(line.split("=")[0])) {
-                    fSrc = line.split("=")[1];
-                }
-            }
-            getAnyFile(new File(fSrc), baseList);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (br1 != null) {
-                    br1.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        //读取需要被同步的文件夹列表
-        BufferedReader br3 = null;
+        List<String> list = FileUtil.readUtf8Lines("list.txt");
         ArrayList<File> fileArrayList = new ArrayList<>();
-        try {
-            br3 = new BufferedReader(new FileReader("list.txt", StandardCharsets.UTF_8));
-            String line;
-            while ((line = br3.readLine()) != null) {
-                if (!"0".equals(line.split("=")[0])) {
-                    File file = new File(line.split("=")[1]);
-                    fileArrayList.add(file);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (br3 != null) {
-                    br3.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        for (String s : list) {
+            if ("0".equals(s.split("=")[0])) {
+                fSrc = s.split("=")[1];
+            } else {
+                File file = new File(s.split("=")[1]);
+                fileArrayList.add(file);
             }
         }
-        List<String> whiteList = FileUtil.readUtf8Lines("..\\..\\..\\white.txt");
+        getAnyFile(new File(fSrc), baseList);
+        //读取需要被同步的文件夹列表
+        List<String> whiteList = FileUtil.readUtf8Lines("white.txt");
+        System.out.println();
         //遍历需要被同步文件夹下的所有文件
         for (File file : fileArrayList) {
             ArrayList<PluginsInfo> newList = new ArrayList<>();
