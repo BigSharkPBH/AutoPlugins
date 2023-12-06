@@ -2,7 +2,6 @@ package com.dsy.function;
 
 import cn.hutool.core.io.FileUtil;
 
-import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringJoiner;
@@ -12,6 +11,8 @@ public class PluginsList {
     public PluginsList() {
         tips();
     }
+
+
 
     public void tips() {
         while (true) {
@@ -59,7 +60,7 @@ public class PluginsList {
                     sj.add(s);
                 }
                 fSrc = sj.toString();
-                if (!FileUtil.exist("list.txt") || FileUtil.size(new File("..\\list.txt")) == 0) {
+                if (!FileUtil.exist("list.txt") || FileUtil.size(FileUtil.file("list.txt")) == 0) {
                     System.out.println("请先指定基准文件夹");
                     break;
                 } else {
@@ -90,7 +91,7 @@ public class PluginsList {
                 }
                 fSrc = sj.toString();
 
-                if (!FileUtil.exist("list.txt") || FileUtil.size(new File("..\\list.txt")) == 0) {
+                if (!FileUtil.exist("list.txt") || FileUtil.size(FileUtil.file("list.txt")) == 0) {
                     FileUtil.writeUtf8String("0=" + fSrc, "list.txt");
                 } else {
                     List<String> list = FileUtil.readUtf8Lines("list.txt");

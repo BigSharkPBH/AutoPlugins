@@ -4,7 +4,6 @@ import cn.hutool.core.io.FileUtil;
 import com.dsy.domain.PluginsInfo;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +38,7 @@ public class CopyFile {
         }
         getAnyFile(new File(fSrc), baseList);
         //如果白名单不存在就生成一个默认的
-        if (!FileUtil.exist("white.yml") || FileUtil.size(new File("white.yml")) == 0) {
+        if (!FileUtil.exist("white.yml") || FileUtil.size(FileUtil.file("white.yml")) == 0) {
             ArrayList<String> tempList = new ArrayList<>();
             Collections.addAll(tempList,
                     "# 一种是后缀名",
@@ -134,7 +133,6 @@ public class CopyFile {
      * */
     public void findFile(File src, PluginsInfo pi, boolean isCopy) {
         //获取现在的基准文件夹里所有的文件
-        File[] files = src.listFiles();
         if (isCopy) {
             StringBuilder sb = getRelativePath(pi);
             FileUtil.copy(pi.getPath(), src.getPath() + sb, true);
@@ -183,7 +181,6 @@ public class CopyFile {
                 case 2 -> {
                     System.exit(0);
                 }
-//                default -> System.out.println("请输入正确的数字");
             }
         }
     }
