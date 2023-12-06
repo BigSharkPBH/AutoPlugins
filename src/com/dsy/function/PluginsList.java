@@ -18,7 +18,7 @@ public class PluginsList {
             System.out.println("----------------欢迎使用插件自动同步工具---------------");
             System.out.println("1.更新基准文件夹");
             System.out.println("2.添加目标文件夹");
-            System.out.println("3.退出");
+            System.out.println("3.主菜单");
             System.out.println("请输入对应的数字");
             System.out.println("---------------------[作者:大鲨鱼]--------------------");
             Scanner sc = new Scanner(System.in);
@@ -39,7 +39,7 @@ public class PluginsList {
                     addList();
                 }
                 case 3 -> {
-                    System.exit(0);
+                    return;
                 }
                 default -> System.out.println("请输入正确的数字");
             }
@@ -48,7 +48,7 @@ public class PluginsList {
 
     public void addList() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("请输入基准文件夹的路径,如xxx\\plugins");
+        System.out.println("请输入目标文件夹的路径,如xxx\\plugins");
         String fSrc;
         while (true) {
             fSrc = sc.nextLine();
@@ -59,7 +59,7 @@ public class PluginsList {
                     sj.add(s);
                 }
                 fSrc = sj.toString();
-                if (!new File("list.txt").exists() || new File("list.txt").length() == 0) {
+                if (!FileUtil.exist("list.txt") || FileUtil.size(new File("..\\list.txt")) == 0) {
                     System.out.println("请先指定基准文件夹");
                     break;
                 } else {
@@ -89,7 +89,8 @@ public class PluginsList {
                     sj.add(s);
                 }
                 fSrc = sj.toString();
-                if (!new File("list.txt").exists() || new File("list.txt").length() == 0) {
+
+                if (!FileUtil.exist("list.txt") || FileUtil.size(new File("..\\list.txt")) == 0) {
                     FileUtil.writeUtf8String("0=" + fSrc, "list.txt");
                 } else {
                     List<String> list = FileUtil.readUtf8Lines("list.txt");

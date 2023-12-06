@@ -6,7 +6,9 @@ import com.dsy.domain.PluginsInfo;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class CopyFile {
     public CopyFile() {
@@ -14,7 +16,6 @@ public class CopyFile {
     }
 
     ArrayList<PluginsInfo> baseList = new ArrayList<>();
-    //    ArrayList<PluginsInfo> newList = new ArrayList<>();
     String fSrc;//基准文件夹的路径
 
     /*
@@ -22,6 +23,10 @@ public class CopyFile {
      * */
     public void compare() {
         //读取现在的插件列表
+        if (!FileUtil.exist("list.txt")) {
+            System.out.println("你必须先指定基准文件夹和目标文件夹");
+            new PluginsList();
+        }
         List<String> list = FileUtil.readUtf8Lines("list.txt");
         ArrayList<File> fileArrayList = new ArrayList<>();
         for (String s : list) {
@@ -33,9 +38,20 @@ public class CopyFile {
             }
         }
         getAnyFile(new File(fSrc), baseList);
+        //如果白名单不存在就生成一个默认的
+        if (!FileUtil.exist("white.yml") || FileUtil.size(new File("white.yml")) == 0) {
+            ArrayList<String> tempList = new ArrayList<>();
+            Collections.addAll(tempList,
+                    "# 一种是后缀名",
+                    "db",
+                    "h2",
+                    "# 一种是文件名",
+                    "#案例-5.3 - 副本.jar");
+            FileUtil.writeUtf8Lines(tempList, "white.yml");
+        }
         //读取需要被同步的文件夹列表
-        List<String> whiteList = FileUtil.readUtf8Lines("white.txt");
-        System.out.println();
+        List<String> whiteList = FileUtil.readUtf8Lines("white.yml");
+        ArrayList<String> confirmList = new ArrayList<>();
         //遍历需要被同步文件夹下的所有文件
         for (File file : fileArrayList) {
             ArrayList<PluginsInfo> newList = new ArrayList<>();
@@ -45,19 +61,21 @@ public class CopyFile {
                 if (whiteList.contains(pi1.getName()) || whiteList.contains(a11[a11.length - 1])) {
                     continue;
                 }
-                //如果newList里不包含pi这个对象
+                //如果newList里不包含pi这个对象,说明有文件被删除了
                 if (!baseList.contains(pi1)) {
                     //进入文件夹获取到里面的文件
                     StringBuilder sb = getRelativePath(pi1);
-                    FileUtil.del(file.getPath() + sb);
+                    confirmList.add(file.getPath() + sb);
+//                    FileUtil.del(file.getPath() + sb);
                 }
+
             }
             for (PluginsInfo pi1 : baseList) {
                 String[] a11 = pi1.getName().split("\\.");
                 if (whiteList.contains(pi1.getName()) || whiteList.contains(a11[a11.length - 1])) {
                     continue;
                 }
-                //如果baseList里不包含pi这个对象
+                //如果newList里不包含pi这个对象,说明有新增文件
                 if (!newList.contains(pi1)) {
                     //去其他文件夹粘贴这个文件
                     for (File sonFile : fileArrayList) {
@@ -68,6 +86,9 @@ public class CopyFile {
                 }
             }
 
+        }
+        if (confirmList.size() != 0) {
+            confirm(confirmList);
         }
     }
 
@@ -117,7 +138,7 @@ public class CopyFile {
         if (isCopy) {
             StringBuilder sb = getRelativePath(pi);
             FileUtil.copy(pi.getPath(), src.getPath() + sb, true);
-        } else {
+        } /*else {
             for (File file : files) {
                 if (file.isFile()) {
                     String name = file.getName();
@@ -125,13 +146,44 @@ public class CopyFile {
                         file.delete();
                         return;
                     }
-                    long length = file.length();
-                    long lastModified = file.lastModified();
-                    String path = file.getPath();
-
                 } else {
                     findFile(file, pi, false);
                 }
+            }
+        }*/
+    }
+
+    public void confirm(ArrayList<String> confirmList) {
+        s1:
+        while (true) {
+            System.out.println("----------------欢迎使用插件自动同步工具---------------");
+            for (String s : confirmList) {
+                System.out.println(s);
+            }
+            System.out.println("以上是将要删除的文件,请确认!!!");
+            System.out.println("按1确认,按2取消操作.");
+            System.out.println("---------------------[作者:大鲨鱼]--------------------");
+            Scanner sc = new Scanner(System.in);
+            int number = 0;
+            while (true) {
+                try {
+                    number = Integer.parseInt(sc.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("请输入正确的数字");
+                }
+                break;
+            }
+            switch (number) {
+                case 1 -> {
+                    for (String s : confirmList) {
+                        FileUtil.del(s);
+                    }
+                    break s1;
+                }
+                case 2 -> {
+                    System.exit(0);
+                }
+//                default -> System.out.println("请输入正确的数字");
             }
         }
     }
